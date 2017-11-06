@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mall.dao.UserDao">
+
+	<insert id="addUser" parameterType="User">
+		insert into user(username,password,email,phone,question,answer,role,create_time,update_time) 
+		values('${username}','${password}','${email}','${phone}','${question}','${answer}',${role},now(),now())
+	</insert>
+	
+	<update id="modifyUser" parameterType="User">
+		update user 
+		<set>
+			<if test="username!=null and !&quot;&quot;.equals(username.trim())">
+				username='${username}',
+			</if>
+			<if test="password!=null and !&quot;&quot;.equals(password.trim())">
+				password='${password}',
+			</if>
+			<if test="email!=null and !&quot;&quot;.equals(email.trim())">
+				email='${email}',
+			</if>
+			<if test="phone!=null and !&quot;&quot;.equals(phone.trim())">
+				phone='${phone}',
+			</if>
+			<if test="question!=null and !&quot;&quot;.equals(question.trim())">
+				question='${question}',
+			</if>
+			<if test="answer!=null and !&quot;&quot;.equals(answer.trim())">
+				answer='${answer}',
+			</if>
+			update_time=now(),
+		</set>
+		where id=${id}
+	</update>
+	
+	<select id="checkName" parameterType="string" resultType="integer">
+		select count(*) from user where username=#{username}
+	</select>
+	
+	<select id="checkLogin" parameterType="User" resultType="integer">
+		select count(*) from user 
+		<where>
+			<if test="username!=null and !&quot;&quot;.equals(username.trim())">
+				and username='${username}' 
+			</if>
+			<if test="password!=null and !&quot;&quot;.equals(password.trim())">
+				and password='${password}' 
+			</if>
+		</where>
+	</select>
+	
+	<select id="queryUserByUsername" parameterType="string" resultType="User">
+		select id,username from user where username=#{username}
+	</select>
+	
+	<select id="findUserIdByUsername" parameterType="string" resultType="integer">
+		select id from user where username=#{username}
+	</select>
+</mapper>

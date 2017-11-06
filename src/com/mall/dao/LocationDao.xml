@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mall.dao.LocationDao">
+	
+	<select id="findProvince" resultType="Location">
+		select p.id,p.name from tm_province as p
+	</select>
+	
+	<select id="findCityByParent_id" parameterType="integer" resultType="Location">
+		select c.id,c.name from tm_city as c where parent_id=#{parent_id}
+	</select>
+	
+	<select id="findAreaByParent_id" parameterType="integer" resultType="Location">
+		select a.id,a.name from tm_area as a where parent_id=#{parent_id}
+	</select>
+</mapper>

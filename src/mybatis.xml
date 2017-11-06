@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+
+
+<configuration>
+
+ 	<!-- 可以加载外部配置文件，在src下直接写文件名，要写在最前面 -->
+    <properties resource="db.properties"/>
+	 <typeAliases>
+       <package name="com.mall.pojo"/>
+       <package name="com.mall.dto"/>
+    </typeAliases>
+  
+</configuration>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mall.dao.OrderDao">
+	<insert id="addOrder" parameterType="Order">
+		insert into order_root(order_no,user_id,shipping_id,payment,payment_type,postage,status,create_time,update_time) 
+		values('${order_no}',${user_id},${shipping_id},${payment},${payment_type},${postage},10,now(),now())
+	</insert>
+	
+	<resultMap type="Order" id="findTheOrders">
+		<id property="id" column="id"/>
+		<result property="user_id" column="user_id"/>
+		<result property="order_no" column="order_no"/>
+		<result property="payment_type" column="payment_type"/>
+		<result property="payment" column="payment"/>
+		<result property="status" column="status"/>
+		<result property="update_time" column="update_time"/>
+		<collection property="order_itemsList" ofType="Order_item">
+			<result property="product_name" column="product_name"/>
+			<result property="product_image" column="product_image"/>
+		</collection>
+	</resultMap>
+	<select id="findOrder" parameterType="PageBean" resultMap="findTheOrders">
+		SELECT r.id AS id, r.user_id AS user_id, r.order_no AS order_no,
+		r.payment_type AS payment_type, r.payment AS payment,
+		r.status AS 'status',r.update_time AS update_time,
+		i.product_name AS product_name, i.product_image AS product_image
+		FROM (select * from order_root limit ${limitStart},${pageSize}) AS r LEFT JOIN order_item AS i
+		ON r.order_no=i.order_no
+		<where>
+			<if test="order!=null">
+				<if test="order.id!=null">
+				and r.id=${order.id}
+				</if>
+				<if test="order.order_no!=null and !&quot;&quot;.equals(order.order_no.trim())">
+				and r.order_no='${order.order_no}'
+				</if>
+				<if test="order.user_id!=null">
+				and r.user_id=${order.user_id}
+				</if>
+				<if test="order.status!=null">
+				and r.status=${order.status}
+				</if>
+			</if>
+		</where>
+	</select>
+	
+	<select id="totalOrder" parameterType="PageBean" resultType="integer">
+		select count(*) 
+		FROM order_root AS r 
+		<where>
+			<if test="order!=null">
+				<if test="order.id!=null">
+				and r.id=${order.id}
+				</if>
+				<if test="order.order_no!=null and !&quot;&quot;.equals(order.order_no.trim())">
+				and r.order_no='${order.order_no}'
+				</if>
+				<if test="order.user_id!=null">
+				and r.user_id=${order.user_id}
+				</if>
+				<if test="order.status!=null">
+				and r.status=${order.status}
+				</if>
+			</if>
+		</where>
+	</select>
+	
+	<select id="findOrderByUserId" parameterType="integer" resultType="Order">
+		select * from order_root where user_id=#{_parameter}
+	</select>
+</mapper>

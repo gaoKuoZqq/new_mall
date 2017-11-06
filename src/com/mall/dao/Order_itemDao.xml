@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mall.dao.Order_itemDao">
+	<insert id="addOrder_item" parameterType="Order_item">
+		insert into order_item(user_id,order_no,product_id,product_name,product_image,current_unit_price,
+		quantity,total_price,create_time,update_time) 
+		values(${user_id},'${order_no}',${product_id},'${product_name}','${product_image}',${current_unit_price},
+		${quantity},${total_price},now(),now())
+	</insert>
+	
+	<select id="findOrder_item" parameterType="PageBean" resultType="Order_item">
+		select * from order_item 
+		<where>
+			<if test="order_item.order_no!=null and !&quot;&quot;.equals(order_item.order_no.trim())">
+				and order_no='${order_item.order_no}'
+			</if>
+			<if test="order_item.user_id!=null">
+				and r.user_id=${order_item.user_id}
+			</if>
+		</where>
+		limit ${limitStart},${pageSize}
+	</select>
+	
+	<select id="totalOrder_item" parameterType="PageBean" resultType="integer">
+		select count(*) from order_item 
+		<where>
+			<if test="order_item.order_no!=null and !&quot;&quot;.equals(order_item.order_no.trim())">
+				and order_no='${order_item.order_no}'
+			</if>
+			<if test="order_item.user_id!=null">
+				and r.user_id=${order_item.user_id}
+			</if>
+		</where>
+		limit ${limitStart},${pageSize}
+	</select>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mall.dao.CartDao">
+	<insert id="addCart" parameterType="Cart">
+		insert into cart(user_id,product_id,quantity,checked,create_time,update_time) 
+		values(${user_id},${product_id},${quantity},1,now(),now())
+	</insert>
+	
+	<delete id="deleteCarts">
+		delete from cart where id in
+		<foreach collection="array" index="index" item="id" open="(" separator="," close=")">  
+ 			#{id}
+		</foreach>
+	</delete>
+	
+	<update id="modifyCartQuantity" parameterType="Cart">
+		update cart set quantity=${quantity} where id=${id}
+	</update>
+	
+	<select id="findCartByuser_id" resultType="Cart" parameterType="integer">
+		select c.id as id,c.product_id as product_id, c.quantity as quantity, c.checked as checked,
+		p.name as 'product.name', p.main_image as 'product.main_image', p.price as 'product.price', p.stock as 'product.stock'
+		from cart as c left join product as p
+		on c.product_id=p.id
+		where c.user_id=#{user_id}
+	</select>
+	
+	<update id="modifyCartCheckedFalse" parameterType="integer">
+		update cart set checked=0 where user_id=#{user_id}
+	</update>
+	
+	<update id="modifyCartCheckedTrue" parameterType="Cart">
+		update cart set checked=1 where id=${id} user_id=${user_id}
+	</update>	
+	
+	<select id="findCartByNewCart" parameterType="Cart" resultType="Cart">
+		select id,quantity from cart where product_id=${product_id} and user_id=${user_id}
+	</select>
+	
+	<select id="findCartsByIdsList" parameterType="arraylist" resultType="Cart">
+		select c.id,c.product_id,c.quantity,
+		p.id as 'product.id',p.name as 'product.name',p.main_image as "product.main_image",p.price as'product.price'
+		from cart as c left join product as p 
+		on c.product_id=p.id
+		where c.id in
+		<foreach collection="array" index="index" item="id" open="(" separator="," close=")">  
+ 			#{id}
+		</foreach>
+	</select>
+	
+	<select id="findCartQuantityAndProductPriceByIdsList" parameterType="arraylist" resultType="Cart">
+		select c.quantity,
+		p.price as'product.price'
+		from cart as c left join product as p 
+		on c.product_id=p.id
+		where c.id in
+		<foreach collection="array" index="index" item="id" open="(" separator="," close=")">  
+ 			#{id}
+		</foreach>
+	</select>
+	
+</mapper>

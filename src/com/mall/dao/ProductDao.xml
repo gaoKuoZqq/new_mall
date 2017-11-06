@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.mall.dao.ProductDao">
+
+	<resultMap type="Product" id="product">
+		<id property="id" column="id"/>
+		<result property="category_id" column="category_id"/>
+		<result property="category_name" column="category_name"/>
+		<result property="name" column="name"/>
+		<result property="subtitle" column="subtitle"/>
+		<result property="main_image" column="main_image"/>
+		<result property="sub_images" column="sub_images"/>
+		<result property="detail" column="detail"/>
+		<result property="price" column="price"/>
+		<result property="stock" column="stock"/>
+	</resultMap>
+	
+	<select id="findProduct" parameterType="PageBean" resultMap="product">
+	SELECT p.id,p.category_id,c.name ascategory_name,p.name,p.subtitle,p.main_image,
+	p.sub_images,p.detail,p.price,p.stock
+	FROM product AS p LEFT JOIN category AS c ON p.category_id=c.id
+		<where>
+		<if test="product!=null">
+			<if test="product.id!=null">
+				and p.id=${category.id} 
+			</if>
+			<if test="product.category_id!=null">
+				and p.category_id=${product.category_id} 
+			</if>
+			<if test="product.name!=null">
+				and p.name='${product.name}' 
+			</if>
+		</if>
+		</where>
+		 limit ${limitStart},${pageSize};
+	</select>
+	
+	<select id="totalProduct" parameterType="PageBean" resultType="integer">
+		select count(*) from product as p
+		<where>
+		<if test="product!=null">
+			<if test="product.id!=null">
+				and p.id=${category.id} 
+			</if>
+			<if test="product.category_id!=null">
+				and p.category_id=${product.category_id} 
+			</if>
+			<if test="product.name!=null">
+				and p.name='${product.name}' 
+			</if>
+			<if test="product.status!=null">
+				and p.status=${product.status} 
+			</if>
+		</if>
+		</where>
+	</select>
+	
+	<select id="findProductByIdUseOfCart" resultType="Product">
+		select id,name,main_image,price,stock from product where id=#{product_id}
+	</select>
+	
+	<resultMap type="Product" id="product_serchDisplay">
+		<id property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="main_image" column="main_image"/>
+		<result property="price" column="price"/>
+	</resultMap>
+	<select id="findProductByCategoryId" resultMap="product_serchDisplay" parameterType="integer">
+		select product.id,product.name,product.main_image,product.price from product where category_id=#{category_id}
+	</select>
+	
+	<select id="findProductByCategoryIdAndName" parameterType="PageBean" resultType="Product">
+		select id,name,main_image,price,subtitle 
+		from product 
+		<where>
+			<if test="product!=null">
+				<if test="product.category_id!=null">
+					and category_id=${product.category_id}
+				</if>
+				<if test="product.name!=null and !&quot;&quot;.equals(product.name.trim())" >
+					and name like '%${product.name}%'
+				</if>
+			</if>
+		</where>
+		limit ${limitStart},${pageSize};
+	</select>
+	
+	<select id="totalProductByCategoryIdAndName" parameterType="PageBean" resultType="integer">
+		select count(*) from product 
+		<where>
+			<if test="product!=null">
+				<if test="product.category_id!=null">
+					and category_id=${product.category_id}
+				</if>
+				<if test="product.name!=null and !&quot;&quot;.equals(product.name.trim())" >
+					and name like '${product.name}'
+				</if>
+			</if>
+		</where>
+	</select>
+	
+	<update id="modifyProductStock" parameterType="Product">
+		update product set stock=${stock} where id=${id}
+	</update>
+	
+	<select id="queryProductStockById" parameterType="integer" resultType="integer">
+		select stock from product where id=#{product_id}
+	</select>
+	
+	<select id="findProductById" parameterType="integer" resultType="Product">
+		select id,name,subtitle,main_image,sub_images,detail,price,stock
+		from product 
+		where id=#{product_id}
+	</select>
+	
+</mapper>
