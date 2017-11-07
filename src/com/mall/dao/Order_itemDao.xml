@@ -35,4 +35,13 @@
 		</where>
 		limit ${limitStart},${pageSize}
 	</select>
+	
+	<select id="findOrder_itemByOrderNo" parameterType="string" resultType="Order_item">
+		select * from order_item 
+		<where>
+			<if test="_parameter!=null">
+				and order_no=#{_parameter}
+			</if>
+		</where>
+	</select>
 </mapper>

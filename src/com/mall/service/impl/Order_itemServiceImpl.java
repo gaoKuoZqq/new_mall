@@ -35,4 +35,9 @@ public class Order_itemServiceImpl implements Order_itemService{
 		return pageBean;
 	}
 
+	@Override
+	public List<Order_item> findOrder_itemByOrderNo(String order_no) {
+		return order_itemDao.findOrder_itemByOrderNo(order_no);
+	}
+
 }

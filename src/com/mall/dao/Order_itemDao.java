@@ -13,4 +13,6 @@ public interface Order_itemDao {
 	List<Order> findOrder_item(PageBean pageBean);
 	
 	Integer totalOrder_item(PageBean pageBean);
+
+	List<Order_item> findOrder_itemByOrderNo(String order_no);
 }

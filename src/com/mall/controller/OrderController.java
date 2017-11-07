@@ -221,7 +221,7 @@ public class OrderController {
 	public ModelAndView goMyOrder(String cart_ids,HttpServletRequest request){
 		HttpSession session = request.getSession(true);
 		if(session.getAttribute("user") == null){
-			ModelAndView modelAndView = new ModelAndView("redirect:home/gohome.shtml");
+			ModelAndView modelAndView = new ModelAndView("redirect:/home/gohome.shtml");
 			return modelAndView;
 		}
 		ModelAndView modelAndView = new ModelAndView("my_order");
